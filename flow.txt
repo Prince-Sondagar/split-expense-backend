@@ -1,0 +1,11 @@
+// Split Expense App
+
+1. Registration
+
+2. Login
+
+3. create group of the expense
+
+4. create expense in the group
+
+5. display summary of group and display how many amount of ows and ownes
