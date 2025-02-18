@@ -7,3 +7,8 @@ export const userRegistrationValidator = [
     body('mobileNumber').isMobilePhone("any").withMessage("Valid  Mobile number  is required"),
     body('password').isLength({ min: 6 }).withMessage("Password must be at least 6 characters")
 ]
+
+export const userLoginValidator = [
+    body("mobileNumber").isMobilePhone("any").withMessage('Valid Mobile number is required'),
+    body('password').isLength({ min: 6 }).withMessage("Password is required or must be 6 character long")
+]

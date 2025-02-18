@@ -1,10 +1,10 @@
-import { nextTick } from "process";
 import { ErrorResponse } from "../middleware/errorHandler";
 import UserModel from "../models/userModel";
+import { generateToken } from "../utils";
 import { getUser } from "./userServices";
 import bcrypt from 'bcrypt';
 
-export const createUser = async (data: any) => {
+export const createUserService = async (data: any) => {
     const { firstName, lastName, email, mobileNumber, password } = data;
 
     const isUserExist = await getUser({ mobileNumber });
@@ -27,4 +27,23 @@ export const createUser = async (data: any) => {
 
     await user.save();
     return user;
+}
+
+export const loginService = async (loginData: any) => {
+    const { mobileNumber, password } = loginData;
+
+    const user = await getUser({ mobileNumber });
+
+    if (!user) {
+        throw new ErrorResponse('User Not found', 404);
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password as string);
+    if (!isPasswordMatch) {
+        throw new ErrorResponse("Invalid password", 400)
+    }
+
+    const token = generateToken(user._id.toString());
+
+    return { message: "Login Successfull", token, user }
 }
