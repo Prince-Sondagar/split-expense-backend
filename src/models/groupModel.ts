@@ -13,7 +13,6 @@ const groupSchema = new Schema<IGroup>({
     createdBy: {
         type: mongoose.Types.ObjectId,
         ref: "User",
-        unique: true
     },
     expenses: [{
         type: mongoose.Types.ObjectId,

@@ -7,9 +7,8 @@ export const validateRequest = (req: Request, res: Response, next: NextFunction)
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        console.log("errors ----->", errors);
         const extractedErrors = errors.array().map(err => err.msg);
         return next(new ErrorResponse(extractedErrors.join(", "), 400));
     }
     next();
-}
+};
