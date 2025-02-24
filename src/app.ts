@@ -7,12 +7,14 @@ import authRoutes from './routes/authRoutes';
 import groupRoutes from './routes/groupRoutes';
 
 import { errorHandler } from "./middleware/errorHandler";
+import path from "path";
 
 const app: Application = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Connect to Database
 connectDB();
@@ -26,5 +28,6 @@ app.use('/api/groups', groupRoutes);
 
 // Global Error handler
 app.use(errorHandler);
+
 
 export default app;

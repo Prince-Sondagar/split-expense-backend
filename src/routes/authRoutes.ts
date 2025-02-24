@@ -5,8 +5,8 @@ import { validateRequest } from '../middleware/validateRequest';
 
 const routes: Router = express.Router();
 
-routes.post('/signUp', userRegistrationValidator, validateRequest, registrationController);
-routes.post('/signIn', userLoginValidator, validateRequest, LoginController);
+routes.post('/signUp', validateRequest(userRegistrationValidator), registrationController);
+routes.post('/signIn', validateRequest(userLoginValidator), LoginController);
 
 
 export default routes;

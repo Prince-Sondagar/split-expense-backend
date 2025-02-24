@@ -17,6 +17,7 @@ const expenseSchema = new Schema<IExpense>({
     },
     splitBetween: [{
         user: { type: mongoose.Types.ObjectId, ref: "User" },
+        expense: { type: Number, require: true },
         status: { type: String, enum: ["pending", "paid"], default: "pending" }
     }],
     group: {
