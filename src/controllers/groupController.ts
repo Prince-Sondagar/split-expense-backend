@@ -40,6 +40,12 @@ export const createGroupController = async (req: any, res: any, next: NextFuncti
 };
 
 
-export const viewGroupController = () => {
-
+export const viewGroupController = async (req: any, res: any, next: NextFunction) => {
+    try {
+        const groupId = req.params.id;
+        console.log(req.params.id)
+        const group = await getGroup({ id: groupId });
+    } catch (error) {
+        next(error);
+    }
 };

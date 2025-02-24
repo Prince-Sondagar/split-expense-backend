@@ -2,6 +2,7 @@ import { body, param } from "express-validator";
 import User from "../models/userModel";
 import mongoose from "mongoose";
 import { ErrorResponse } from "../middleware/errorHandler";
+import { getGroup } from "../services/groupServices";
 
 export const createGroupValidator = [
     body("group_details").
@@ -47,5 +48,13 @@ export const createGroupValidator = [
 
 
 export const viewSpecificGroupValidator = [
-    param('id').notEmpty().withMessage("Id is required!")
+    param('id').notEmpty().withMessage("params is required!"),
+    param('id').exists().custom(async (id) => {
+        const group = await getGroup({ _id: mongoose.Types.ObjectId.isValid(id) ? id : new mongoose.Types.ObjectId(id) });
+
+        if (!group) {
+            throw new ErrorResponse("Group not found with this Id", 400)
+        }
+        return true;
+    })
 ];
