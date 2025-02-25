@@ -24,7 +24,7 @@ const AuthMiddleWare = async (req: any, res: any, next: NextFunction) => {
             throw new ErrorResponse('Invalid token.', 401);
         }
 
-        req.user = await getUser(decode?.id);
+        req.user = await getUser({ _id: decode?.userId });
 
         next();
     } catch (error) {

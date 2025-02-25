@@ -43,7 +43,7 @@ export const loginService = async (loginData: any) => {
         throw new ErrorResponse("Invalid password", 400);
     }
 
-    const token = generateToken(user._id.toString());
+    const token = generateToken({ userId: user._id.toString() });
 
-    return { message: "Login Successfull", token, user };
+    return { message: "Login Successful", token, user };
 };

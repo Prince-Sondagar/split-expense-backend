@@ -1,6 +1,6 @@
 import { NextFunction } from "express";
 import fs from 'fs';
-import { createGroupService, getGroup } from "../services/groupServices";
+import { createGroupService, getAllGroupsService, getGroup } from "../services/groupServices";
 import { IGroup } from "../types";
 import { cloudinaryImageUpload } from "../services/cloudinaryServices";
 import { ErrorResponse } from "../middleware/errorHandler";
@@ -27,7 +27,7 @@ export const createGroupController = async (req: any, res: any, next: NextFuncti
 
         const result = await createGroupService(group_details, currentUser);
 
-        res.status(201).send({ message: "Group created successfully!", group: result });
+        return res.status(201).send({ message: "Group created successfully!", group: result });
 
     } catch (error) {
         console.error("Error in createGroupController:", error);
@@ -40,12 +40,38 @@ export const createGroupController = async (req: any, res: any, next: NextFuncti
 };
 
 
-export const viewGroupController = async (req: any, res: any, next: NextFunction) => {
+export const getGroupByIdController = async (req: any, res: any, next: NextFunction) => {
     try {
         const groupId = req.params.id;
-        console.log(req.params.id)
-        const group = await getGroup({ id: groupId });
+        const group = await getGroup({ _id: groupId }, ["createdBy", "members"]);
+        return res.status(200).send({ message: "Group details fetched successfully!", group: group });
     } catch (error) {
+        console.log("Error in viewGroupController:", error);
         next(error);
+    }
+};
+
+export const getAllGroupsController = async (req: any, res: any, next: NextFunction) => {
+    try {
+        const currentUser = req.user;
+
+        const result = await getAllGroupsService(currentUser?._id);
+        return res.send({ message: "Groups fetched successfully!", groups: result });
+    } catch (error) {
+        console.log("Error in getAllGroupsController:", error);
+        next(error);
+    }
+};
+
+
+export const updateGroupController = async (req: any, res: any) => {
+    try {
+        const groupImage = req.file;
+        // const parsedData = req.body && JSON.parse(req.body);
+        console.log("Call ---->", req.body);
+        return;
+    } catch (error) {
+        console.log("Error in updateGroupController:", error);
+        // next(error);
     }
 };
