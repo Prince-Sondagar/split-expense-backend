@@ -1,8 +1,8 @@
 import { NextFunction } from "express";
 import fs from 'fs';
-import { createGroupService, getAllGroupsService, getGroup } from "../services/groupServices";
+import { createGroupService, deleteGroupService, getAllGroupsService, getGroup, updateGroupService } from "../services/groupServices";
 import { IGroup } from "../types";
-import { cloudinaryImageUpload } from "../services/cloudinaryServices";
+import { cloudinaryImageRemove, cloudinaryImageUpload } from "../services/cloudinaryServices";
 import { ErrorResponse } from "../middleware/errorHandler";
 
 
@@ -64,14 +64,47 @@ export const getAllGroupsController = async (req: any, res: any, next: NextFunct
 };
 
 
-export const updateGroupController = async (req: any, res: any) => {
+export const updateGroupController = async (req: any, res: any, next: NextFunction) => {
     try {
+        const groupId = req.params.id;
+        console.log(req.body);
+        let groupDetails: IGroup = req.body && JSON.parse(req?.body?.group_details);
         const groupImage = req.file;
-        // const parsedData = req.body && JSON.parse(req.body);
-        console.log("Call ---->", req.body);
-        return;
+
+
+        const currentDbGroup = await getGroup({ _id: groupId });
+
+        if (groupImage) {
+            if (currentDbGroup?.groupImage) {
+                await cloudinaryImageRemove(currentDbGroup.groupImage as string);
+            }
+            groupDetails.groupImage = await cloudinaryImageUpload(groupImage.path) as string;
+            fs.unlinkSync(groupImage?.path);
+        }
+
+        if (groupDetails.groupImage === null && currentDbGroup?.groupImage) {
+            await cloudinaryImageRemove(currentDbGroup?.groupImage);
+            groupDetails.groupImage = "";
+        }
+
+        const result = await updateGroupService(groupDetails, groupId);
+
+        return res.status(200).send({ message: "Group updated successfully", group: result });
     } catch (error) {
         console.log("Error in updateGroupController:", error);
-        // next(error);
+        next(error);
+    }
+};
+
+
+export const deleteGroupController = async (req: any, res: any, next: NextFunction) => {
+    try {
+        const groupId = req.params.id;
+        const result = await deleteGroupService(groupId);
+        if (result) {
+            return res.status(200).send({ message: "Group deleted successfully" });
+        }
+    } catch (error) {
+        next(error);
     }
 };
