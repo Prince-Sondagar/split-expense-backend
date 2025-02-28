@@ -8,6 +8,7 @@ import groupRoutes from './routes/groupRoutes';
 
 import { errorHandler } from "./middleware/errorHandler";
 import path from "path";
+import expenseRoute from "./routes/expenseRoute";
 
 const app: Application = express();
 
@@ -25,6 +26,8 @@ app.get("/", (req: any, res: any) => res.send("Hello World"));
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/groups', groupRoutes);
+app.use('/api/expenses', expenseRoute);
+
 
 // Global Error handler
 app.use(errorHandler);
